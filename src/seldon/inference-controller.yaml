@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inference-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inference-controller
+  template:
+    metadata:
+      labels:
+        app: inference-controller
+    spec:
+      containers:
+      - name: inference-controller
+        image: tybalex/seldon-inference-controller
+        imagePullPolicy: Always
+        env:
+        - name: NATS_SERVER_URL
+          value: "nats://nats_client:VfU6TcAl9x@nats-client.default.svc:4222"
+        - name: AMBASSADOR_ENDPOINT
+          value: "aiops-default.seldon.svc.cluster.local:8000"
+        - name: ES_ENDPOINT
+          value: "http://elasticsearch-coordinating-only.default.svc.cluster.local:9200"

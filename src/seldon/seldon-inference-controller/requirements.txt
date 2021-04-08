@@ -1,0 +1,6 @@
+pandas
+asyncio-nats-client
+elasticsearch
+aiohttp
+seldon-core
+numpy

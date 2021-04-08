@@ -1,0 +1,37 @@
+apiVersion: machinelearning.seldon.io/v1
+kind: SeldonDeployment
+metadata:
+  name: aiops
+  namespace: seldon
+spec:
+  name: aiops
+  predictors:
+  - componentSpecs:
+    - spec:
+        containers:
+        - image: tybalex/combiner
+          name: combiner
+        - image: tybalex/drainmodel
+          name: drain
+        - image: amartyarancher/nulogmodel
+          name: nulog
+          env:
+            - name: NATS_SERVER_URL
+              value: "nats://nats_client:VfU6TcAl9x@nats-client.default.svc:4222"
+            - name: MINIO_ACCESS_KEY
+              value: "myaccesskey"
+            - name: MINIO_SECRET_KEY
+              value: "mysecretkey"
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+    graph:
+      name: combiner
+      type: COMBINER
+      children:
+      - name: nulog
+        type: MODEL
+      - name: drain
+        type: MODEL
+    name: default
+    replicas: 1

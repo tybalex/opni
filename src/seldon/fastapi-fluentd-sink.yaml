@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-fluentd-sink
+  labels:
+    service: fastapi-fluentd-sink
+spec:
+  selector:
+    app: fastapi-fluentd-sink
+  ports:
+  - port: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-fluentd-sink
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-fluentd-sink
+  template:
+    metadata:
+      labels:
+        app: fastapi-fluentd-sink
+    spec:
+      containers:
+      - name: fastapi-fluentd-sink
+        image: sanjayrancher/fastapi-fluentd-sink-postsummit:latest
+        imagePullPolicy: Always
+        env:
+        - name: NATS_SERVER_URL
+          value: "nats://nats_client:VfU6TcAl9x@nats-client.default.svc:4222"
+        ports:
+        - containerPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fastapi-fluentd-sink-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: fastapi-fluentd-sink
+          servicePort: 80

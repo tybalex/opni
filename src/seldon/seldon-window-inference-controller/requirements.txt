@@ -1,0 +1,17 @@
+pandas
+asyncio-nats-client
+elasticsearch
+aiohttp
+seldon-core
+numpy
+
+pybind11
+scipy
+numpy==1.17.4
+pandas==0.25.3
+fasttext
+boto3
+seldon-core
+gensim
+asyncio-nats-client
+pickleDB
