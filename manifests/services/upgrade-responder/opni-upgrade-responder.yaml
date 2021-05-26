@@ -1,0 +1,25 @@
+# Specify the name of the application that is using this Upgrade Responder server
+# This will be used to create a database named <application-name>_upgrade_responder
+# in the InfluxDB to store all data for this Upgrade Responder
+# The name must be in snake case format
+applicationName: opni
+
+secret:
+  name: upgrade-responder-secrets
+  # Set this to false if you don't want to manage these secrets with helm
+  managed: true
+  influxDBUrl: "http://influxdb.default:8086"
+  influxDBUser: "admin"
+  influxDBPassword: "admin"
+
+# This configmap contains information about the latest release
+# of the application that is using this Upgrade Responder
+configMap:
+  responseConfig: |-
+    {
+       "Versions": [{
+          "Name": "v0.100",
+          "ReleaseDate": "2021-05-25T12:30:00Z",
+          "Tags": ["latest"]
+       }]
+    }

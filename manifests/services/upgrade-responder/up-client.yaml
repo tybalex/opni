@@ -1,0 +1,24 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: es-management
+spec: # CronJob
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec: # JOB
+      template:
+        spec: # Pod
+          containers:
+          - image: alpine
+            env:
+            - name: ES_ENDPOINT
+              value: "https://opendistro-es-client-service.opni-system.svc.cluster.local:9200"
+            - name: ES_USER
+              value: "admin"
+            - name: ES_PASSWORD
+              value: "admin"
+            command: ["/bin/sh","-c"]
+            args: ["apk add curl && apk add coreutils && curl -X POST http://opni-upgrade-responder.default.svc.cluster.local:8314/v1/checkupgrade -d '{ \"appVersion\": \"v0.112.1\", \"extraInfo\": {}}'"]
+            name: es-management
+          restartPolicy: OnFailure
+      backoffLimit: 2
